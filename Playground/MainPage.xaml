@@ -6,8 +6,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <Pivot x:Name="mainPivot" Background="White" Title="Playground">
+        <PivotItem Header="Canvans">
+            <Canvas x:Name="canvas">
+                <Button x:Name="btn" Content="Button" Canvas.Left="367" Canvas.Top="219" Height="69" Width="132"/>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            </Canvas>
+        </PivotItem>
+        <PivotItem Header="Other">
 
-    </Grid>
+        </PivotItem>
+    </Pivot>
 </Page>
