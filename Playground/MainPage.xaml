@@ -9,7 +9,7 @@
     <Pivot x:Name="mainPivot" Background="White" Title="Playground">
         <PivotItem Header="Canvans">
             <Canvas x:Name="canvas">
-                <Button x:Name="btn" Content="Button" Canvas.Left="367" Canvas.Top="219" Height="69" Width="132"/>
+                <Button x:Name="btn" Content="Button" Canvas.Left="73" Canvas.Top="53" Height="69" Width="132"/>
 
             </Canvas>
         </PivotItem>

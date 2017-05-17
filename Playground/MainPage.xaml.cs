@@ -77,18 +77,19 @@ namespace Playground
 
             btn.Click += (sender, args) =>
             {
-                shadowSprite.RotationAxis = new Vector3(0.0f, 1.0f, 0.0f);
-                shadowSprite.CenterPoint = new Vector3(shadowSprite.Size / 2, -20.0f);
+                shadowSprite.RotationAxis = new Vector3(1.0f, 0.0f, 0.0f);
+                shadowSprite.CenterPoint = new Vector3(shadowSprite.Size / 2, 0.0f);
                 shadowSprite.TransformMatrix =
                     Matrix4x4.Identity;
                 var rotate = Compositor.CreateScalarKeyFrameAnimation();
                 rotate.Duration = TimeSpan.FromMilliseconds(500.0);
                 rotate.InsertKeyFrame(1.0f, 30.0f, easing);
                 shadowSprite.StartAnimation(nameof(shadowSprite.RotationAngleInDegrees), rotate);
-
             };
 
             canvasRootVisual.Children.InsertAtTop(shadowSprite);
+            shadowSprite.UpdatePerspective();
+            SetupShittyTiltingEffect(btn);
         }
 
         void SetupComposition()
@@ -115,10 +116,8 @@ namespace Playground
             var _visual = _this.GetVisual();
             var _compositor = Compositor;
             _visual.CenterPoint = new Vector3((float)_this.Width / 2, (float)_this.Height / 2, 0.0f);
-            _visual.TransformMatrix = Matrix4x4.CreateLookAt(
-                cameraPosition: new Vector3(0, 0, 1),
-                cameraTarget: new Vector3(0, 0, 0),
-                cameraUpVector: new Vector3(0, 1, 0));
+            _visual.TransformMatrix =
+                Matrix4x4.Identity;
 
             _this.PointerMoved += (sender, args) =>
             {
@@ -141,5 +140,7 @@ namespace Playground
                 _visual.RotationAngleInDegrees = 0.0f;
             };
         }
+
+
     }
 }
