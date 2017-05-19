@@ -17,7 +17,8 @@ namespace Playground
         static DependencyProperty ShadowThicknessProperty =
             DependencyProperty.Register(
                 "ShadowThickness", typeof(float), typeof(InteractiveShadowBase),
-                new PropertyMetadata(0.9f,
+                new PropertyMetadata(
+                    0.9f,
                     (_this, args) => ((InteractiveShadowBase)_this).shadow.Opacity = (float)args.NewValue));
 
         public float ShadowThickness

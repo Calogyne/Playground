@@ -20,8 +20,11 @@ namespace Playground
             };
 
             var backdropBrush = compositor.CreateBackdropBrush();
+
             var effectFactory = compositor.CreateEffectFactory(blurEffect, new[] { "Blur.BlurAmount" });
+
             var effectBrush = effectFactory.CreateBrush();
+
             effectBrush.SetSourceParameter("backdrop", backdropBrush);
 
             return effectBrush;
@@ -44,6 +47,7 @@ namespace Playground
         protected override void OnDisconnected()
         {
             base.OnDisconnected();
+
             this.CompositionBrush?.Dispose();
             this.CompositionBrush = null;
         }
@@ -51,15 +55,19 @@ namespace Playground
         static void OnBlurAmountChanges(DependencyObject dp, DependencyPropertyChangedEventArgs args)
         {
             var _this = (GaussianBlurBrush)dp;
+
             var compositor = _this.CompositionBrush?.Compositor;
+
             var transition = compositor.CreateScalarKeyFrameAnimation();
+
             transition.InsertKeyFrame(
                 value: (float)args.NewValue,
                 normalizedProgressKey: 1.0f,
                 easingFunction: compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f)));
+
             transition.Duration = TimeSpan.FromMilliseconds(800.0);
-            _this.CompositionBrush.StartAnimation(
-                "BlurAmount", transition);
+
+            _this.CompositionBrush.StartAnimation("BlurAmount", transition);
         }
     }
 }
