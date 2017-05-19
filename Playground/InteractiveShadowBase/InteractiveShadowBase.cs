@@ -59,7 +59,7 @@ namespace Playground
         void UpdateShadow()
         {
             // local function to save typing lel
-            void setSize(FrameworkElement element) => 
+            void setSize(FrameworkElement element) =>
                 baseVisual.Size = new Vector2((float)element.Width, (float)element.Height);
             switch (this.Content)
             {
@@ -79,5 +79,6 @@ namespace Playground
                 default:
                     break;
             }
+        }
     }
 }
