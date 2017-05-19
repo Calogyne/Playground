@@ -1,21 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Windows.UI;
 
 // This is all rubbish.
@@ -33,18 +23,22 @@ namespace Playground
             SetupComposition();
 
             var shadowSprite = Compositor.CreateSpriteVisual();
+
             shadowSprite.Offset = new Vector3(300, 200, 0);
             shadowSprite.Size = new Vector2(150);
             shadowSprite.Brush = Compositor.CreateGaussianBlurCompositionBrush(15.0f);
+
             var shadow = SetupShadow(shadowSprite);
 
             var shadowIntensify = Compositor.CreateScalarKeyFrameAnimation();
+
             shadowIntensify.InsertKeyFrame(1.0f, 90.0f);
             shadowIntensify.Duration = TimeSpan.FromMilliseconds(1200.0);
+
             var easing = Compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f));
-            var linearEasing = Compositor.CreateLinearEasingFunction();
 
             var rectPointerState = ElementCompositionPreview.GetPointerPositionPropertySet(canvas);
+
             canvas.PointerMoved += (sender, args) =>
             {
                 switch (rectPointerState.TryGetVector3("Position", out var val))
@@ -89,7 +83,9 @@ namespace Playground
             };
 
             canvasRootVisual.Children.InsertAtTop(shadowSprite);
+
             shadowSprite.UpdatePerspective();
+
             SetupShittyTiltingEffect(btn);
         }
 
@@ -120,7 +116,7 @@ namespace Playground
             _visual.TransformMatrix =
                 Matrix4x4.Identity;
 
-            void onPointerMoved(object sender, PointerRoutedEventArgs args)
+            _this.PointerMoved += (sender, args) =>
             {
                 var position = args.GetCurrentPoint((FrameworkElement)sender).Position.ToVector2();
                 var relativeP =
@@ -135,10 +131,8 @@ namespace Playground
 
                 Debug.WriteLine($"Pointer: {position},\nRelative: {relativeP},\nRotation Axis: {axis}");
             };
-            _this.PointerMoved += onPointerMoved;
 
-            _this.PointerExited += (sender, args) =>
-                _visual.RotationAngleInDegrees = 0.0f;
+            _this.PointerExited += (sender, args) => _visual.RotationAngleInDegrees = 0.0f;
         }
 
         private void grid_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
