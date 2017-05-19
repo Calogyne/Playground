@@ -58,24 +58,26 @@ namespace Playground
 
         void UpdateShadow()
         {
+            // local function to save typing lel
+            void setSize(FrameworkElement element) => 
+                baseVisual.Size = new Vector2((float)element.Width, (float)element.Height);
             switch (this.Content)
             {
                 case null:
                     break;
                 case Image img:
-                    baseVisual.Size = new Vector2((float)img.Width, (float)img.Height);
+                    setSize(img);
                     shadow.Mask = img.GetAlphaMask();
                     break;
                 case Shape x:
-                    baseVisual.Size = new Vector2((float)x.Width, (float)x.Height);
+                    setSize(x);
                     shadow.Mask = x.GetAlphaMask();
                     break;
                 case FrameworkElement element:
-                    baseVisual.Size = new Vector2((float)element.Width, (float)element.Height);
+                    setSize(element);
                     break;
                 default:
                     break;
             }
-        }
     }
 }
