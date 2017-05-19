@@ -35,7 +35,7 @@ namespace Playground
             var shadowSprite = Compositor.CreateSpriteVisual();
             shadowSprite.Offset = new Vector3(300, 200, 0);
             shadowSprite.Size = new Vector2(150);
-            shadowSprite.Brush = Compositor.CreateColorBrush(Colors.DarkViolet);
+            shadowSprite.Brush = Compositor.CreateGaussianBlurCompositionBrush(15.0f);
             var shadow = SetupShadow(shadowSprite);
 
             var shadowIntensify = Compositor.CreateScalarKeyFrameAnimation();
@@ -50,13 +50,13 @@ namespace Playground
                 switch (rectPointerState.TryGetVector3("Position", out var val))
                 {
                     case CompositionGetValueStatus.Succeeded:
-                        System.Diagnostics.Debug.WriteLine(val);
+                        Debug.WriteLine(val);
                         break;
                     case CompositionGetValueStatus.NotFound:
-                        System.Diagnostics.Debug.WriteLine("Nothing");
+                        Debug.WriteLine("Nothing");
                         break;
                     case CompositionGetValueStatus.TypeMismatch:
-                        System.Diagnostics.Debug.WriteLine("type mismatch");
+                        Debug.WriteLine("type mismatch");
                         break;
                 }
             };
@@ -85,6 +85,7 @@ namespace Playground
                 rotate.Duration = TimeSpan.FromMilliseconds(500.0);
                 rotate.InsertKeyFrame(1.0f, 30.0f, easing);
                 shadowSprite.StartAnimation(nameof(shadowSprite.RotationAngleInDegrees), rotate);
+                (blurryRect.Fill as GaussianBlurBrush).BlurAmount = 3.0f;
             };
 
             canvasRootVisual.Children.InsertAtTop(shadowSprite);
@@ -119,7 +120,7 @@ namespace Playground
             _visual.TransformMatrix =
                 Matrix4x4.Identity;
 
-            _this.PointerMoved += (sender, args) =>
+            void onPointerMoved(object sender, PointerRoutedEventArgs args)
             {
                 var position = args.GetCurrentPoint((FrameworkElement)sender).Position.ToVector2();
                 var relativeP =
@@ -134,13 +135,20 @@ namespace Playground
 
                 Debug.WriteLine($"Pointer: {position},\nRelative: {relativeP},\nRotation Axis: {axis}");
             };
+            _this.PointerMoved += onPointerMoved;
 
             _this.PointerExited += (sender, args) =>
-            {
                 _visual.RotationAngleInDegrees = 0.0f;
-            };
         }
 
-
+        private void grid_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
+        {
+            var delta = new Vector3(e.Delta.Translation.ToVector2() * 100, 0.0f);
+            var move = Compositor.CreateVector3KeyFrameAnimation();
+            move.InsertExpressionKeyFrame(1.0f, "this.StartingValue + delta");
+            //move.Duration = TimeSpan.FromMilliseconds(16.0);
+            move.SetVector3Parameter("delta", delta);
+            grid.GetVisual().StartAnimation("Offset", move);
+        }
     }
 }
