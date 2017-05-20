@@ -5,11 +5,12 @@
     xmlns:local="using:Playground"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:win2D="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d">
     
     
     <Pivot x:Name="mainPivot" Background="White" Title="Playground">
-        <PivotItem Header="Canvans">
+        <PivotItem Header="Canvas">
             <Canvas x:Name="canvas">
                 <Button x:Name="btn" Content="Button" Canvas.Left="73" Canvas.Top="53" Height="69" Width="132"/>
                 <Grid x:Name="grid" Height="264" Canvas.Left="548" Canvas.Top="227" Width="395"
@@ -37,8 +38,10 @@
                 </Rectangle>
             </Canvas>
         </PivotItem>
-        <PivotItem Header="Other">
-
+        <PivotItem Header="Animated Drawing">
+            <win2D:CanvasAnimatedControl Name="drawingBoard" 
+                HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                Draw="drawingBoard_Draw"/>
         </PivotItem>
     </Pivot>
 </Page>

@@ -37,10 +37,10 @@ namespace Playground
 
             var easing = Compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f));
 
-            var rectPointerState = ElementCompositionPreview.GetPointerPositionPropertySet(canvas);
 
             canvas.PointerMoved += (sender, args) =>
             {
+                var rectPointerState = ElementCompositionPreview.GetPointerPositionPropertySet(canvas);
                 switch (rectPointerState.TryGetVector3("Position", out var val))
                 {
                     case CompositionGetValueStatus.Succeeded:
