@@ -39,9 +39,9 @@
             </Canvas>
         </PivotItem>
         <PivotItem Header="Animated Drawing">
-            <win2D:CanvasAnimatedControl Name="drawingBoard" 
+            <win2D:CanvasAnimatedControl x:Name="drawingBoard" 
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                Draw="drawingBoard_Draw"/>
+                Draw="drawingBoard_Draw" CreateResources="drawingBoard_Setup"/>
         </PivotItem>
     </Pivot>
 </Page>

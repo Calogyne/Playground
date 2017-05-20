@@ -4,7 +4,6 @@ using Microsoft.Graphics.Canvas.Effects;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
-using Windows.Graphics.Effects;
 
 namespace Playground
 {
