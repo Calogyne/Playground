@@ -50,7 +50,7 @@ namespace Playground
             var timingInfo =
                 $"<Elapsed time: {t.ElapsedTime}, Total time: {t.TotalTime}, " +
                 $"\nFrame cout. of current second: {fraCount}>";
-            WriteLine(timingInfo);
+            if (t.UpdateCount % 150L == 0) WriteLine(timingInfo);
 
             var r = 70.0f * (float)Abs(Cos((t.UpdateCount % 240L) / 240.0 * 2 * PI));
             var o = new Vector2(250, 250);
