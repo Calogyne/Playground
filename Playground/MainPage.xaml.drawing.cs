@@ -27,13 +27,9 @@ namespace Playground
                 $"\nFrame cout. of current second: {fraCount}>";
             WriteLine(timingInfo);
 
-
-            var r = 70.0f * (float)Abs(Cos((t.UpdateCount % 240L / 240.0) * 2 * PI));
-
-            WriteLine(r);
+            var r = 70.0f * (float)Abs(Cos((t.UpdateCount % 240L) / 240.0 * 2 * PI));
             var o = new Vector2(250, 250);
             ds.DrawCircle(o, r, Colors.DarkViolet, 7);
-
         }
     }
 }
