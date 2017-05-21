@@ -17,7 +17,6 @@ namespace Playground
 {
     partial class MainPage : Page
     {
-
         GaussianBlurEffect _blur;
         CanvasBitmap lauren;
         CanvasImageBrush lauren_brush;
@@ -50,9 +49,9 @@ namespace Playground
             var timingInfo =
                 $"<Elapsed time: {t.ElapsedTime}, Total time: {t.TotalTime}, " +
                 $"\nFrame cout. of current second: {fraCount}>";
-            if (t.UpdateCount % 150L == 0) WriteLine(timingInfo);
+            if (t.UpdateCount % 10L == 0) WriteLine(timingInfo);
 
-            var r = 70.0f * (float)Abs(Cos((t.UpdateCount % 240L) / 240.0 * 2 * PI));
+            var r = 70.0f * (float)Abs(Sin((t.UpdateCount % 240L) / 240.0 * 2 * PI));
             var o = new Vector2(250, 250);
             ds.DrawCircle(o, r, Colors.DarkViolet, 7);
 
