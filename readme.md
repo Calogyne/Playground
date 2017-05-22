@@ -22,7 +22,7 @@
     }
 
     // now, for some UI element inside the container control, you can:
-    element.SetValue(ContainerControl.PositionProperty, new Vector2());
+    element.SetValue(ContainerControl.PositionAttachedProperty, new Vector2());
 
     // XAML's property management system will take care about all those
     // parent-child stuff for you.
