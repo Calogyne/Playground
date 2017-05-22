@@ -9,9 +9,15 @@
     // lets say, in container control definition:
     class ContainerControl : Control 
     {
-        public static DependencyProperty PositionProperty =
-            DependencyProperty.Register("Position", typeof(Vector2), typeof(ContainerControl), null);
-        // no accessor property definition!
+        public static readonly DependencyProperty PositionAttachedProperty =
+            DependencyProperty.RegisterAttached("Position", typeof(Vector2), typeof(ContainerControl), null);
+
+        // convenient accessors:
+        public static Vector2 GetPosition(DependencyObject target) =>
+            (Vector2)target.GetValue(PositionAttachedProperty);
+        
+        public static void SetPosition(DependencyObject target, Vector2 value) =>
+            target.SetValue(PositionAttachedProperty, value);
         ...
     }
 
@@ -19,8 +25,7 @@
     element.SetValue(ContainerControl.PositionProperty, new Vector2());
 
     // XAML's property management system will take care about all those
-    // parent-child stuff for you, no need to explicity specify the parent 
-    //while getting/setting the attached property.
+    // parent-child stuff for you.
 
     ```
     ```xml
