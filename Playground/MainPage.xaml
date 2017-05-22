@@ -7,12 +7,12 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:win2D="using:Microsoft.Graphics.Canvas.UI.Xaml"
     mc:Ignorable="d">
-    
-    
+
     <Pivot x:Name="mainPivot" Background="White" Title="Playground">
         <PivotItem Header="Canvas">
             <Canvas x:Name="canvas">
-                <Button x:Name="btn" Content="Button" Canvas.Left="73" Canvas.Top="53" Height="69" Width="132"/>
+                <Button x:Name="btn" Canvas.Left="73" Canvas.Top="53" Height="49" Width="153" RenderTransformOrigin="0.5,0.5" Content="{x:Bind Path=grid.(Canvas.Left), Mode=OneWay}"/>
+
                 <Grid x:Name="grid" Height="264" Canvas.Left="548" Canvas.Top="227" Width="395"
                       ManipulationMode="All" ManipulationDelta="grid_ManipulationDelta">
                     <Grid.Background>
@@ -23,9 +23,7 @@
                                Foreground="White"
                                Text="Drag Me!" FontSize="26" Height="55" Width="117"/>
                 </Grid>
-                
-                
-                
+
                 <local:InteractiveShadowBase x:Name="shadowBase" Height="209" Width="286" 
                                              Canvas.Left="200" Canvas.Top="250">
                     <Image Source="/Assets/Pictures/lauren_mayberry.jpg"/>
@@ -38,6 +36,7 @@
                 </Rectangle>
             </Canvas>
         </PivotItem>
+        
         <PivotItem Header="Animated Drawing">
             <win2D:CanvasAnimatedControl x:Name="drawingBoard" 
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

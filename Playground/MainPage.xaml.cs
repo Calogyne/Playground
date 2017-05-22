@@ -16,13 +16,45 @@ namespace Playground
     {
         Compositor Compositor;
         ContainerVisual canvasRootVisual;
+        SpriteVisual shadowSprite;
+        CubicBezierEasingFunction easing;
 
         public MainPage()
         {
             InitializeComponent();
             SetupComposition();
 
-            var shadowSprite = Compositor.CreateSpriteVisual();
+            var (btn_onPointerEntered, btn_onPointerExited) = _setupButtonHoveringBehavior();
+            var btn_onClicked = _setupButtonClickingBehavior();
+            
+
+            // commented out for now to prevent it from polluting debug console.
+            //canvas.PointerMoved += reportPointerPositionRelativeTo_canvas;
+
+            SetupShittyTiltingEffect(btn);
+        }
+
+        // via the composition api, which doesn't seem to work.
+        void reportPointerPositionRelativeTo_canvas(object sender, PointerRoutedEventArgs args)
+        {
+            var rectPointerState = ElementCompositionPreview.GetPointerPositionPropertySet(canvas);
+            switch (rectPointerState.TryGetVector3("Position", out var val))
+            {
+                case CompositionGetValueStatus.Succeeded:
+                    Debug.WriteLine(val);
+                    break;
+                case CompositionGetValueStatus.NotFound:
+                    Debug.WriteLine("Nothing");
+                    break;
+                case CompositionGetValueStatus.TypeMismatch:
+                    Debug.WriteLine("type mismatch");
+                    break;
+            } 
+        }
+
+        (PointerEventHandler, PointerEventHandler) _setupButtonHoveringBehavior()
+        {
+            shadowSprite = Compositor.CreateSpriteVisual();
 
             shadowSprite.Offset = new Vector3(300, 200, 0);
             shadowSprite.Size = new Vector2(150);
@@ -35,41 +67,32 @@ namespace Playground
             shadowIntensify.InsertKeyFrame(1.0f, 90.0f);
             shadowIntensify.Duration = TimeSpan.FromMilliseconds(1200.0);
 
-            var easing = Compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f));
-
-
-            canvas.PointerMoved += (sender, args) =>
-            {
-                var rectPointerState = ElementCompositionPreview.GetPointerPositionPropertySet(canvas);
-                switch (rectPointerState.TryGetVector3("Position", out var val))
-                {
-                    case CompositionGetValueStatus.Succeeded:
-                        Debug.WriteLine(val);
-                        break;
-                    case CompositionGetValueStatus.NotFound:
-                        Debug.WriteLine("Nothing");
-                        break;
-                    case CompositionGetValueStatus.TypeMismatch:
-                        Debug.WriteLine("type mismatch");
-                        break;
-                }
-            };
-
-            btn.PointerEntered += (sender, args) =>
+            void onPointerEntered(object sender, PointerRoutedEventArgs args)
             {
                 shadowIntensify.ClearAllParameters();
                 shadowIntensify.InsertKeyFrame(1.0f, 90.0f, easing);
                 shadow.StartAnimation("BlurRadius", shadowIntensify);
             };
-
-            btn.PointerExited += (sender, args) =>
+            void onPointerExited(object sender, PointerRoutedEventArgs args)
             {
                 shadowIntensify.ClearAllParameters();
                 shadowIntensify.InsertKeyFrame(1.0f, 0.0f, easing);
                 shadow.StartAnimation("BlurRadius", shadowIntensify);
             };
 
-            btn.Click += (sender, args) =>
+            btn.PointerEntered += onPointerEntered;
+            btn.PointerExited += onPointerExited;
+
+            canvasRootVisual.Children.InsertAtTop(shadowSprite);
+
+            shadowSprite.UpdatePerspective();
+
+            return(onPointerEntered, onPointerExited);
+        }
+
+        PointerEventHandler _setupButtonClickingBehavior()
+        {
+            void onPointerClicked(object sender, RoutedEventArgs args)
             {
                 shadowSprite.RotationAxis = new Vector3(1.0f, 0.0f, 0.0f);
                 shadowSprite.CenterPoint = new Vector3(shadowSprite.Size / 2, 0.0f);
@@ -79,14 +102,11 @@ namespace Playground
                 rotate.Duration = TimeSpan.FromMilliseconds(500.0);
                 rotate.InsertKeyFrame(1.0f, 30.0f, easing);
                 shadowSprite.StartAnimation(nameof(shadowSprite.RotationAngleInDegrees), rotate);
-                (blurryRect.Fill as GaussianBlurBrush).BlurAmount = 3.0f;
+                //(blurryRect.Fill as GaussianBlurBrush).BlurAmount = 3.0f;
             };
 
-            canvasRootVisual.Children.InsertAtTop(shadowSprite);
-
-            shadowSprite.UpdatePerspective();
-
-            SetupShittyTiltingEffect(btn);
+            btn.Click += onPointerClicked;
+            return onPointerClicked;
         }
 
         void SetupComposition()
@@ -94,6 +114,7 @@ namespace Playground
             Compositor = this.GetVisual().Compositor;
             canvasRootVisual = Compositor.CreateContainerVisual();
             canvas.SetElementChildVisual(canvasRootVisual);
+            easing = Compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f));
         }
 
         DropShadow SetupShadow(SpriteVisual sprite)
@@ -142,7 +163,7 @@ namespace Playground
             move.InsertExpressionKeyFrame(1.0f, "this.StartingValue + delta");
             //move.Duration = TimeSpan.FromMilliseconds(16.0);
             move.SetVector3Parameter("delta", delta);
-            grid.GetVisual().StartAnimation("Offset", move);
+            //grid.GetVisual().StartAnimation("Offset", move);
         }
     }
 }
