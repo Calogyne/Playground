@@ -18,6 +18,18 @@ namespace Playground
         public static void SetElementChildVisual(this UIElement _this, Visual visual)
             => ElementCompositionPreview.SetElementChildVisual(_this, visual);
 
+        public static DropShadow SetupShadow(this SpriteVisual sprite)
+        {
+            var Compositor = sprite.Compositor;
+            var shadow = Compositor.CreateDropShadow();
+            var mask = Compositor.CreateMaskBrush();
+            shadow.Offset = new Vector3(0.0f, 0.0f, 0.0f);
+            shadow.Color = Windows.UI.Colors.Black;
+            shadow.BlurRadius = 0.0f;
+            shadow.Opacity = 0.90f;
+            sprite.Shadow = shadow;
+            return shadow;
+        }
 
         /// <summary>
         /// Shamelessly copyed from StackOverflow anyway, it does voodoo magic so to give your visual perspective

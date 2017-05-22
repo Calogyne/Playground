@@ -17,7 +17,7 @@ namespace Playground
         Compositor Compositor;
         ContainerVisual canvasRootVisual;
         SpriteVisual shadowSprite;
-        CubicBezierEasingFunction easing;
+        CubicBezierEasingFunction easeInOutQuad;
 
         public MainPage()
         {
@@ -31,7 +31,7 @@ namespace Playground
             // commented out for now to prevent it from polluting debug console.
             //canvas.PointerMoved += reportPointerPositionRelativeTo_canvas;
 
-            SetupShittyTiltingEffect(btn);
+            SetupShittyTiltingEffect(grid);
         }
 
         // via the composition api, which doesn't seem to work.
@@ -60,32 +60,40 @@ namespace Playground
             shadowSprite.Size = new Vector2(150);
             shadowSprite.Brush = Compositor.CreateGaussianBlurCompositionBrush(15.0f);
 
-            var shadow = SetupShadow(shadowSprite);
+            var shadow = shadowSprite.SetupShadow();
 
             var shadowIntensify = Compositor.CreateScalarKeyFrameAnimation();
-
             shadowIntensify.InsertKeyFrame(1.0f, 90.0f);
             shadowIntensify.Duration = TimeSpan.FromMilliseconds(1200.0);
+
+            var shadowAppears = Compositor.CreateScalarKeyFrameAnimation();
+            shadowAppears.InsertExpressionKeyFrame(1.0f, "isAppearing ? 0.9f : 0.0f", easeInOutQuad);
+            shadowAppears.Duration = TimeSpan.FromMilliseconds(1200.0);
 
             void onPointerEntered(object sender, PointerRoutedEventArgs args)
             {
                 shadowIntensify.ClearAllParameters();
-                shadowIntensify.InsertKeyFrame(1.0f, 90.0f, easing);
+                shadowIntensify.InsertKeyFrame(1.0f, 90.0f, easeInOutQuad);
                 shadow.StartAnimation("BlurRadius", shadowIntensify);
+
+                shadowAppears.SetBooleanParameter("isAppearing", true);
+                shadow.StartAnimation("Opacity", shadowAppears);
             };
+
             void onPointerExited(object sender, PointerRoutedEventArgs args)
             {
                 shadowIntensify.ClearAllParameters();
-                shadowIntensify.InsertKeyFrame(1.0f, 0.0f, easing);
+                shadowIntensify.InsertKeyFrame(1.0f, 0.0f, easeInOutQuad);
                 shadow.StartAnimation("BlurRadius", shadowIntensify);
+
+                shadowAppears.SetBooleanParameter("isAppearing", false);
+                shadow.StartAnimation("Opacity", shadowAppears);
             };
 
             btn.PointerEntered += onPointerEntered;
             btn.PointerExited += onPointerExited;
 
             canvasRootVisual.Children.InsertAtTop(shadowSprite);
-
-            shadowSprite.UpdatePerspective();
 
             return(onPointerEntered, onPointerExited);
         }
@@ -96,11 +104,9 @@ namespace Playground
             {
                 shadowSprite.RotationAxis = new Vector3(1.0f, 0.0f, 0.0f);
                 shadowSprite.CenterPoint = new Vector3(shadowSprite.Size / 2, 0.0f);
-                shadowSprite.TransformMatrix =
-                    Matrix4x4.Identity;
                 var rotate = Compositor.CreateScalarKeyFrameAnimation();
                 rotate.Duration = TimeSpan.FromMilliseconds(500.0);
-                rotate.InsertKeyFrame(1.0f, 30.0f, easing);
+                rotate.InsertKeyFrame(1.0f, 30.0f, easeInOutQuad);
                 shadowSprite.StartAnimation(nameof(shadowSprite.RotationAngleInDegrees), rotate);
                 //(blurryRect.Fill as GaussianBlurBrush).BlurAmount = 3.0f;
             };
@@ -114,19 +120,7 @@ namespace Playground
             Compositor = this.GetVisual().Compositor;
             canvasRootVisual = Compositor.CreateContainerVisual();
             canvas.SetElementChildVisual(canvasRootVisual);
-            easing = Compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f));
-        }
-
-        DropShadow SetupShadow(SpriteVisual sprite)
-        {
-            var shadow = Compositor.CreateDropShadow();
-            var mask = Compositor.CreateMaskBrush();
-            shadow.Offset = new Vector3(0.0f, 0.0f, 0.0f);
-            shadow.Color = Colors.Black;
-            shadow.BlurRadius = 0.0f;
-            shadow.Opacity = 0.90f;
-            sprite.Shadow = shadow;
-            return shadow;
+            easeInOutQuad = Compositor.CreateCubicBezierEasingFunction(new Vector2(0.0f, 1.05f), new Vector2(0.2f, 1.0f));
         }
 
         void SetupShittyTiltingEffect(FrameworkElement _this)
@@ -163,7 +157,7 @@ namespace Playground
             move.InsertExpressionKeyFrame(1.0f, "this.StartingValue + delta");
             //move.Duration = TimeSpan.FromMilliseconds(16.0);
             move.SetVector3Parameter("delta", delta);
-            //grid.GetVisual().StartAnimation("Offset", move);
+            grid.GetVisual().StartAnimation("Offset", move);
         }
     }
 }
