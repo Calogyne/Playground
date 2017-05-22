@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.Numerics;
 using Windows.UI.Composition;
@@ -26,7 +27,6 @@ namespace Playground
 
             var (btn_onPointerEntered, btn_onPointerExited) = _setupButtonHoveringBehavior();
             var btn_onClicked = _setupButtonClickingBehavior();
-            
 
             // commented out for now to prevent it from polluting debug console.
             //canvas.PointerMoved += reportPointerPositionRelativeTo_canvas;

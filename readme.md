@@ -1,8 +1,8 @@
-﻿## 一些有用的 MSDN posts
+﻿## 一些有用的 MSDN posts, good reads
 
 ### On XAML and related topics
-* [ControlTemplate class](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.controltemplate)
-* [Concept of attached properties](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/attached-properties-overview)
+- [ControlTemplate class](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.controltemplate)
+- [Concept of attached properties](https://docs.microsoft.com/en-us/windows/uwp/xaml-platform/attached-properties-overview)
     
     tl;dr:
     ```csharp
@@ -34,7 +34,10 @@
 
 
 ### On data virtualization
-* [ListView and GridView data virtualization](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/listview-and-gridview-data-optimization)
+- [ListView and GridView data virtualization](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/listview-and-gridview-data-optimization)
 
 ### On file access
-* [KnownFolder class](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.KnownFolders)
+- [KnownFolder class](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.KnownFolders)
+
+### On C# language, .NET
+- [Asynchronous programming](https://docs.microsoft.com/en-us/dotnet/articles/csharp/async) 
