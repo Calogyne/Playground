@@ -42,5 +42,7 @@
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
                 Draw="drawingBoard_Draw" CreateResources="drawingBoard_Setup"/>
         </PivotItem>
+
+        <PivotItem Header="AlbumView test"></PivotItem>
     </Pivot>
 </Page>

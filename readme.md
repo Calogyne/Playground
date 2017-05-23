@@ -31,10 +31,19 @@
     ```xml
     <Element x:Name="element" ContainerControl.Position="...">
     ```
-
+- Layout:
+    + [custom panel overview](https://docs.microsoft.com/en-us/windows/uwp/layout/custom-panels-overview)
+    + [FrameworkElement.ArrangeOverride(Size)](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.FrameworkElement#Windows_UI_Xaml_FrameworkElement_ArrangeOverride_Windows_Foundation_Size_)
+    + [FrameworkElement.MeasureOverride(Size)](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.FrameworkElement#Windows_UI_Xaml_FrameworkElement_MeasureOverride_Windows_Foundation_Size_)
+    + [Layout(Windows Presentation Foundation)](https://msdn.microsoft.com/en-us/library/ms745058(v=vs.110).aspx) I think up to this point WPF is still better documented than UWP.
 
 ### On data virtualization
 - [ListView and GridView data virtualization](https://docs.microsoft.com/en-us/windows/uwp/debug-test-perf/listview-and-gridview-data-optimization)
+
+### On data binding
+- [Data binding in depth](https://docs.microsoft.com/en-us/windows/uwp/data-binding/data-binding-in-depth)
+- [Incremental loading](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Data.ISupportIncrementalLoading)
+- [DataContext of FrameworkElement](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.FrameworkElement#Windows_UI_Xaml_FrameworkElement_DataContext)
 
 ### On file access
 - [KnownFolder class](https://docs.microsoft.com/en-us/uwp/api/Windows.Storage.KnownFolders)
