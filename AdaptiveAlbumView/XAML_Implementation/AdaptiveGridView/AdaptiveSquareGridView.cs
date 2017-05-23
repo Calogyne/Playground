@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Linq;
-using System.Diagnostics;
+using static System.Diagnostics.Debug;
 using System.Numerics;
+using Windows.Foundation.Collections;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml;
@@ -14,12 +14,40 @@ namespace AdaptiveAlbumView.XAML_Implementation
 {
     partial class AdaptiveSquareGridView : GridView
     {
+        Compositor compositor;
+        ImplicitAnimationCollection reposition;
         public AdaptiveSquareGridView()
         {
-
+            this.Items.VectorChanged += OnItemsModified;
         }
 
-        
+        void SetupComposition()
+        {
+            compositor = this.GetVisual().Compositor;
+
+            var repositionAnimation = compositor.CreateVector3KeyFrameAnimation();
+            repositionAnimation.Target = "Offset";
+            repositionAnimation.Duration = TimeSpan.FromMilliseconds(800.0);
+            repositionAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue", 
+                compositor.CreateEaseInOutQuadFunction());
+
+            reposition = compositor.CreateImplicitAnimationCollection();
+            reposition["Offset"] = repositionAnimation;
+        }
+
+        void OnItemsModified(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+        {
+            switch (@event.CollectionChange)
+            {
+                case CollectionChange.ItemInserted:
+                    var newItem = (UIElement)sender[(int)@event.Index];
+                    var _visual = newItem.GetVisual();
+                    _visual.ImplicitAnimations = reposition;
+                    break;
+                default:
+                    break;
+            }
+        }
 
         protected override Size MeasureOverride(Size availableSize)
         {
