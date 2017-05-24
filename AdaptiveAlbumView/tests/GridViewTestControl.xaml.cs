@@ -27,6 +27,7 @@ namespace AdaptiveAlbumView.tests
         {
             this.InitializeComponent();
             rnd = new Random();
+            addButton.Click += (sender, args) => myGridView.OnChildAdded();
         }
 
         private void addButton_Click(object sender, RoutedEventArgs e)

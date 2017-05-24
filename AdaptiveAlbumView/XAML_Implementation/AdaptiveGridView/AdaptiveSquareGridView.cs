@@ -48,19 +48,10 @@ namespace AdaptiveAlbumView.XAML_Implementation
             layoutImplicitAnimations["Size"] = resizeAnimation;
         }
 
-        void OnItemsModified(IObservableVector<object> sender, IVectorChangedEventArgs @event)
+        public void OnChildAdded()
         {
-            this.InvalidateMeasure();
-            switch (@event.CollectionChange)
-            {
-                case CollectionChange.ItemInserted:
-                    var newItem = (UIElement)sender[(int)@event.Index];
-                    var _visual = newItem.GetVisual();
-                    _visual.ImplicitAnimations = layoutImplicitAnimations;
-                    break;
-                default:
-                    break;
-            }
+            foreach (var child in Children)
+                child.GetVisual().ImplicitAnimations = layoutImplicitAnimations;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
@@ -98,12 +89,6 @@ namespace AdaptiveAlbumView.XAML_Implementation
             var newSize = new Size(availableSize.Width, rowCount * currentWidth);
 
             return newSize;
-        }
-
-        protected Size ArrangeOverride_(Size finalSize)
-        {
-
-            return finalSize;
         }
     }
 }
