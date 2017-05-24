@@ -15,9 +15,10 @@ namespace AdaptiveAlbumView.XAML_Implementation
     partial class AdaptiveSquareGridView : GridView
     {
         Compositor compositor;
-        ImplicitAnimationCollection reposition;
+        ImplicitAnimationCollection layoutImplicitAnimations;
         public AdaptiveSquareGridView()
         {
+            SetupComposition();
             this.Items.VectorChanged += OnItemsModified;
         }
 
@@ -25,14 +26,21 @@ namespace AdaptiveAlbumView.XAML_Implementation
         {
             compositor = this.GetVisual().Compositor;
 
+            var easeInOutQuad = compositor.CreateEaseInOutQuadFunction(); 
+
             var repositionAnimation = compositor.CreateVector3KeyFrameAnimation();
             repositionAnimation.Target = "Offset";
             repositionAnimation.Duration = TimeSpan.FromMilliseconds(800.0);
-            repositionAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue", 
-                compositor.CreateEaseInOutQuadFunction());
+            repositionAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue", easeInOutQuad);
 
-            reposition = compositor.CreateImplicitAnimationCollection();
-            reposition["Offset"] = repositionAnimation;
+            var resizeAnimation = compositor.CreateVector2KeyFrameAnimation();
+            resizeAnimation.Target = "Size";
+            resizeAnimation.Duration = TimeSpan.FromMilliseconds(800.0);
+            repositionAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue", easeInOutQuad);
+
+            layoutImplicitAnimations = compositor.CreateImplicitAnimationCollection();
+            layoutImplicitAnimations["Offset"] = repositionAnimation;
+            layoutImplicitAnimations["Size"] = resizeAnimation;
         }
 
         void OnItemsModified(IObservableVector<object> sender, IVectorChangedEventArgs @event)
@@ -42,7 +50,7 @@ namespace AdaptiveAlbumView.XAML_Implementation
                 case CollectionChange.ItemInserted:
                     var newItem = (UIElement)sender[(int)@event.Index];
                     var _visual = newItem.GetVisual();
-                    _visual.ImplicitAnimations = reposition;
+                    _visual.ImplicitAnimations = layoutImplicitAnimations;
                     break;
                 default:
                     break;
