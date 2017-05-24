@@ -15,23 +15,18 @@ namespace AdaptiveAlbumView.XAML_Implementation
 
     partial class AdaptiveSquareGridView : Panel
     {
-        static DependencyProperty DesiredColumnCountProperty = DependencyProperty.Register(
-            "DesiredColumnCount", typeof(int), typeof(AdaptiveSquareGridView),
-            new PropertyMetadata(4, 
-                (d, args) =>
-                {
-                    if ((int)args.NewValue <= 0) throw new ArgumentException("Cannot be <= 0.");
-                    var _this = (AdaptiveSquareGridView)d;
-                    _this.InvalidateMeasure();
-                }));
+        static readonly DependencyProperty ChildElementMaxWidthProperty = DependencyProperty.Register(
+            "ChildElementMaxWidth", typeof(double), typeof(AdaptiveSquareGridView),
+            new PropertyMetadata(300.0));
 
-        public int DesiredColumnCount
+        public double ChildElementMaxWidth
         {
-            get => (int)this.GetValue(DesiredColumnCountProperty);
-            set => this.SetValue(DesiredColumnCountProperty, value);
+            get => (double)GetValue(ChildElementMaxWidthProperty);
+            set => SetValue(ChildElementMaxWidthProperty, value);
         }
 
-        static DependencyProperty LayoutAnimationDurationProperty = DependencyProperty.Register(
+
+        static readonly DependencyProperty LayoutAnimationDurationProperty = DependencyProperty.Register(
             "LayoutAnimationDuration", typeof(TimeSpan), typeof(AdaptiveSquareGridView),
             new PropertyMetadata(TimeSpan.FromMilliseconds(500.0),
                 (d, args) => 

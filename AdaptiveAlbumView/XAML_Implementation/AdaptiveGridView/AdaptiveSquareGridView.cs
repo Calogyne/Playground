@@ -1,6 +1,7 @@
 ﻿using System;
 using static System.Diagnostics.Debug;
 using System.Numerics;
+using static System.Math;
 using Windows.Foundation.Collections;
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Hosting;
@@ -16,6 +17,8 @@ namespace AdaptiveAlbumView.XAML_Implementation
     {
         Compositor compositor;
         ImplicitAnimationCollection layoutImplicitAnimations;
+        int columnCount;
+        double currentWidth;
 
         public AdaptiveSquareGridView() : base()
         {
@@ -60,39 +63,46 @@ namespace AdaptiveAlbumView.XAML_Implementation
             }
         }
 
-        protected override Size MeasureOverride(Size availableSize)
-        {
-            var side = availableSize.Width / this.DesiredColumnCount;
-            var itemAvailableSize = new Size(side, side);
-            foreach (UIElement item in Children)
-                item.Measure(itemAvailableSize);
-
-            var rowCount = (Children.Count % DesiredColumnCount == 0 ? 0 : 1) + Children.Count / DesiredColumnCount;
-            var newSize = new Size(availableSize.Width, rowCount * side);
-            return newSize;
-        }
-
         protected override Size ArrangeOverride(Size finalSize)
         {
             if (Children.Count == 0) return base.ArrangeOverride(finalSize);
-
-            var l = finalSize.Width / DesiredColumnCount;
 
             (int i, int row) current = (0, 0);
             
             foreach (UIElement item in Children)
             {
-                double x = current.i % DesiredColumnCount * l,
-                       y = current.row * l;
-                Rect newRect = new Rect(x, y, l, l);
+                double x = current.i % columnCount * currentWidth,
+                       y = current.row * currentWidth;
+                Rect newRect = new Rect(x, y, currentWidth, currentWidth);
                 WriteLine($"{x}, {y}");
                 item.Arrange(newRect);
 
                 current.row += 
-                    (current.i + 1) >= DesiredColumnCount && (current.i + 1) % DesiredColumnCount == 0 ? 1 : 0;
+                    (current.i + 1) >= columnCount && (current.i + 1) % columnCount == 0 ? 1 : 0;
                 current.i += 1;
             }
             
+            return finalSize;
+        }
+
+        protected override Size MeasureOverride(Size availableSize)
+        {
+            columnCount = (int)Ceiling(availableSize.Width / ChildElementMaxWidth);
+            currentWidth = availableSize.Width / columnCount;
+
+            var availableSizeForChild = new Size(currentWidth, currentWidth);
+            foreach (var child in Children)
+                child.Measure(availableSizeForChild);
+
+            var rowCount = (Children.Count % columnCount == 0 ? 0 : 1) + Children.Count / columnCount;
+            var newSize = new Size(availableSize.Width, rowCount * currentWidth);
+
+            return newSize;
+        }
+
+        protected Size ArrangeOverride_(Size finalSize)
+        {
+
             return finalSize;
         }
     }

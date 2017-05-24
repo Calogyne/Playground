@@ -21,7 +21,7 @@ namespace AdaptiveAlbumView.tests
     public sealed partial class GridViewTestControl : UserControl
     {
         Random rnd;
-        Color[] c = new Color[] { Colors.Orange, Colors.Navy, Colors.PeachPuff, Colors.Plum, Colors.Violet, Colors.Azure, Colors.AntiqueWhite, Colors.Crimson };
+        Color[] c = new Color[] { Colors.DarkOrange, Colors.Navy, Colors.ForestGreen, Colors.Plum, Colors.DarkViolet, Colors.Azure, Colors.AntiqueWhite, Colors.Crimson };
 
         public GridViewTestControl()
         {
