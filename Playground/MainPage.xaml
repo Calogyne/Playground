@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:win2D="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:album="using:AdaptiveAlbumView.tests"
     mc:Ignorable="d">
 
     <Pivot x:Name="mainPivot" Background="White" Title="Playground">
@@ -43,6 +44,8 @@
                 Draw="drawingBoard_Draw" CreateResources="drawingBoard_Setup"/>
         </PivotItem>
 
-        <PivotItem Header="AlbumView test"></PivotItem>
+        <PivotItem Header="AlbumView test">
+            <album:GridViewTestControl/>
+        </PivotItem>
     </Pivot>
 </Page>

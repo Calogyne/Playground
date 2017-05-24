@@ -159,6 +159,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AdaptiveAlbumView\AdaptiveAlbumView.csproj">
+      <Project>{6d65b1b9-547d-40bc-a215-7455c4272cc3}</Project>
+      <Name>AdaptiveAlbumView</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ExpressionBuilder\ExpressionBuilder.csproj">
       <Project>{97f79cb4-fb7b-4dc3-8a08-28fa5694a73c}</Project>
       <Name>ExpressionBuilder</Name>

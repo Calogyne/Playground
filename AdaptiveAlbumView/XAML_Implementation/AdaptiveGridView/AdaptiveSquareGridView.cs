@@ -12,14 +12,16 @@ using Windows.Foundation;
 
 namespace AdaptiveAlbumView.XAML_Implementation
 {
-    partial class AdaptiveSquareGridView : GridView
+    partial class AdaptiveSquareGridView : Panel
     {
         Compositor compositor;
         ImplicitAnimationCollection layoutImplicitAnimations;
-        public AdaptiveSquareGridView()
+
+        public AdaptiveSquareGridView() : base()
         {
             SetupComposition();
-            this.Items.VectorChanged += OnItemsModified;
+            //this.Children.VectorChanged += OnItemsModified;
+            
         }
 
         void SetupComposition()
@@ -30,12 +32,12 @@ namespace AdaptiveAlbumView.XAML_Implementation
 
             var repositionAnimation = compositor.CreateVector3KeyFrameAnimation();
             repositionAnimation.Target = "Offset";
-            repositionAnimation.Duration = TimeSpan.FromMilliseconds(800.0);
+            repositionAnimation.Duration = LayoutAnimationDuration;
             repositionAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue", easeInOutQuad);
 
             var resizeAnimation = compositor.CreateVector2KeyFrameAnimation();
             resizeAnimation.Target = "Size";
-            resizeAnimation.Duration = TimeSpan.FromMilliseconds(800.0);
+            resizeAnimation.Duration = LayoutAnimationDuration;
             repositionAnimation.InsertExpressionKeyFrame(1.0f, "this.FinalValue", easeInOutQuad);
 
             layoutImplicitAnimations = compositor.CreateImplicitAnimationCollection();
@@ -45,6 +47,7 @@ namespace AdaptiveAlbumView.XAML_Implementation
 
         void OnItemsModified(IObservableVector<object> sender, IVectorChangedEventArgs @event)
         {
+            this.InvalidateMeasure();
             switch (@event.CollectionChange)
             {
                 case CollectionChange.ItemInserted:
@@ -61,36 +64,35 @@ namespace AdaptiveAlbumView.XAML_Implementation
         {
             var side = availableSize.Width / this.DesiredColumnCount;
             var itemAvailableSize = new Size(side, side);
-            foreach (UIElement item in Items)
+            foreach (UIElement item in Children)
                 item.Measure(itemAvailableSize);
 
-            var rowCount = (Items.Count % DesiredColumnCount == 0 ? 0 : 1) + Items.Count / DesiredColumnCount;
+            var rowCount = (Children.Count % DesiredColumnCount == 0 ? 0 : 1) + Children.Count / DesiredColumnCount;
             var newSize = new Size(availableSize.Width, rowCount * side);
             return newSize;
         }
 
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (Items.Count == 0) return base.ArrangeOverride(finalSize);
+            if (Children.Count == 0) return base.ArrangeOverride(finalSize);
 
-            var l = finalSize.Width / DesiredColumnCount / 2;
+            var l = finalSize.Width / DesiredColumnCount;
 
-            (int i, int row) current = (1, 1);
-            foreach (UIElement item in Items)
+            (int i, int row) current = (0, 0);
+            
+            foreach (UIElement item in Children)
             {
-                (double x, double y) itemOrigin =
-                    ((current.i - 1) % DesiredColumnCount * item.DesiredSize.Width + l,
-                     (current.row - 1) * DesiredSize.Height + l);
-
-                var newRect = new Rect(
-                    itemOrigin.x, itemOrigin.y, 
-                    item.DesiredSize.Width, item.DesiredSize.Height);
+                double x = current.i % DesiredColumnCount * l,
+                       y = current.row * l;
+                Rect newRect = new Rect(x, y, l, l);
+                WriteLine($"{x}, {y}");
                 item.Arrange(newRect);
 
-                current.row += current.i >= DesiredColumnCount && current.i % DesiredColumnCount == 0 ? 1 : 0;
+                current.row += 
+                    (current.i + 1) >= DesiredColumnCount && (current.i + 1) % DesiredColumnCount == 0 ? 1 : 0;
                 current.i += 1;
             }
-
+            
             return finalSize;
         }
     }
