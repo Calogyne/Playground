@@ -10,19 +10,31 @@ using Windows.UI.Xaml.Input;
 using Windows.UI;
 using Windows.Foundation;
 
-namespace AdaptiveAlbumView.XAML_Implementation
+namespace AdaptiveAlbumView.XAML
 {
-
     partial class AdaptiveSquareGridView : Panel
     {
         static readonly DependencyProperty ChildElementMaxWidthProperty = DependencyProperty.Register(
             "ChildElementMaxWidth", typeof(double), typeof(AdaptiveSquareGridView),
-            new PropertyMetadata(300.0));
+            new PropertyMetadata(300.0, 
+                (d, args) => (d as AdaptiveSquareGridView)?.InvalidateMeasure()));
 
         public double ChildElementMaxWidth
         {
             get => (double)GetValue(ChildElementMaxWidthProperty);
             set => SetValue(ChildElementMaxWidthProperty, value);
+        }
+
+
+        static readonly DependencyProperty ChildElementGapProperty = DependencyProperty.Register(
+            "ChildElementGap", typeof(double), typeof(AdaptiveSquareGridView),
+            new PropertyMetadata(0.0,
+                (d, args) => (d as AdaptiveSquareGridView)?.InvalidateMeasure()));
+
+        public double ChildElementGap
+        {
+            get => (double)GetValue(ChildElementGapProperty);
+            set => SetValue(ChildElementGapProperty, value);
         }
 
 

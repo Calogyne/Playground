@@ -7,8 +7,10 @@ using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using Windows.UI;
-using ExpressionBuilder;
+using Windows.Storage;
+using Windows.UI.Xaml.Media.Imaging;
 
 
 // This is all rubbish.
@@ -29,6 +31,25 @@ namespace Playground
 
             var (btn_onPointerEntered, btn_onPointerExited) = _setupButtonHoveringBehavior();
             var btn_onClicked = _setupButtonClickingBehavior();
+
+            //var taylorSwift_1989 = 
+            //    KnownFolders.MusicLibrary
+            //    .GetFolderAsync("Purchases")
+            //    .AsTask().Result
+            //    .GetFolderAsync("Taylor Swift")
+            //    .AsTask().Result
+            //    .GetFolderAsync("1989")
+            //    .AsTask().Result;
+            //
+            //var blank_space = taylorSwift_1989.GetFileAsync("02 Blank Space.mp3").AsTask().Result;
+            //var coverStream =
+            //    blank_space.GetThumbnailAsync(Windows.Storage.FileProperties.ThumbnailMode.SingleItem)
+            //    .AsTask().Result.CloneStream();
+            //
+            //var coverBitmap = new BitmapImage();
+            //coverBitmap.SetSource(coverStream);
+            //
+            //albumImage.Source = coverBitmap;
 
             // commented out for now to prevent it from polluting debug console.
             //canvas.PointerMoved += reportPointerPositionRelativeTo_canvas;
@@ -60,36 +81,47 @@ namespace Playground
 
             shadowSprite.Offset = new Vector3(300, 200, 0);
             shadowSprite.Size = new Vector2(150);
-            shadowSprite.Brush = Compositor.CreateGaussianBlurCompositionBrush(15.0f);
+            shadowSprite.CenterPoint = new Vector3(75.0f, 75.0f, 0.0f);
+            shadowSprite.Brush = Compositor.CreateColorBrush(Colors.DarkMagenta); //Compositor.CreateGaussianBlurCompositionBrush(15.0f);
 
             var shadow = shadowSprite.SetupShadow();
 
+            var animationDuration = TimeSpan.FromMilliseconds(1200.0);
+
             var shadowIntensify = Compositor.CreateScalarKeyFrameAnimation();
-            shadowIntensify.InsertKeyFrame(1.0f, 90.0f);
-            shadowIntensify.Duration = TimeSpan.FromMilliseconds(1200.0);
+            shadowIntensify.InsertExpressionKeyFrame(1.0f, "isAppearing ? 70.0f : 0.0f", easeInOutQuad);
+            shadowIntensify.Duration = animationDuration;
 
             var shadowAppears = Compositor.CreateScalarKeyFrameAnimation();
-            shadowAppears.InsertExpressionKeyFrame(1.0f, "isAppearing ? 0.9f : 0.0f", easeInOutQuad);
-            shadowAppears.Duration = TimeSpan.FromMilliseconds(1200.0);
+            shadowAppears.InsertExpressionKeyFrame(1.0f, "isAppearing ? 1.0f : 0.1f", easeInOutQuad);
+            shadowAppears.Duration = animationDuration;
+
+            var rising = Compositor.CreateVector3KeyFrameAnimation();
+            rising.InsertExpressionKeyFrame(1.0f, "isRising ? Vector3(1.1f, 1.1f, 1.0f) : Vector3(1.0f, 1.0f, 1.0f)", easeInOutQuad);
+            rising.Duration = animationDuration;
 
             void onPointerEntered(object sender, PointerRoutedEventArgs args)
             {
-                shadowIntensify.ClearAllParameters();
-                shadowIntensify.InsertKeyFrame(1.0f, 90.0f, easeInOutQuad);
+                shadowIntensify.SetBooleanParameter("isAppearing", true);
                 shadow.StartAnimation("BlurRadius", shadowIntensify);
 
                 shadowAppears.SetBooleanParameter("isAppearing", true);
                 shadow.StartAnimation("Opacity", shadowAppears);
+
+                rising.SetBooleanParameter("isRising", true);
+                shadowSprite.StartAnimation("Scale", rising);
             };
 
             void onPointerExited(object sender, PointerRoutedEventArgs args)
             {
-                shadowIntensify.ClearAllParameters();
-                shadowIntensify.InsertKeyFrame(1.0f, 0.0f, easeInOutQuad);
+                shadowIntensify.SetBooleanParameter("isAppearing", false);
                 shadow.StartAnimation("BlurRadius", shadowIntensify);
 
                 shadowAppears.SetBooleanParameter("isAppearing", false);
                 shadow.StartAnimation("Opacity", shadowAppears);
+
+                rising.SetBooleanParameter("isRising", false);
+                shadowSprite.StartAnimation("Scale", rising);
             };
 
             btn.PointerEntered += onPointerEntered;

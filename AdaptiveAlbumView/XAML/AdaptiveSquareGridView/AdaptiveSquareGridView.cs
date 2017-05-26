@@ -2,16 +2,12 @@
 using static System.Diagnostics.Debug;
 using System.Numerics;
 using static System.Math;
-using Windows.Foundation.Collections;
 using Windows.UI.Composition;
-using Windows.UI.Xaml.Hosting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Input;
-using Windows.UI;
 using Windows.Foundation;
 
-namespace AdaptiveAlbumView.XAML_Implementation
+namespace AdaptiveAlbumView.XAML
 {
     partial class AdaptiveSquareGridView : Panel
     {
@@ -23,8 +19,7 @@ namespace AdaptiveAlbumView.XAML_Implementation
         public AdaptiveSquareGridView() : base()
         {
             SetupComposition();
-            //this.Children.VectorChanged += OnItemsModified;
-            
+            this.UseLayoutRounding = false;
         }
 
         void SetupComposition()
@@ -62,10 +57,13 @@ namespace AdaptiveAlbumView.XAML_Implementation
             
             foreach (UIElement item in Children)
             {
-                double x = current.i % columnCount * currentWidth,
-                       y = current.row * currentWidth;
-                Rect newRect = new Rect(x, y, currentWidth, currentWidth);
-                WriteLine($"{x}, {y}");
+                //double additional = 
+
+                double x = current.i % columnCount * currentWidth + ChildElementGap,
+                       y = current.row * currentWidth + ChildElementGap;
+
+                Rect newRect = new Rect(x, y, currentWidth - ChildElementGap, currentWidth - ChildElementGap);
+
                 item.Arrange(newRect);
 
                 current.row += 
@@ -78,15 +76,18 @@ namespace AdaptiveAlbumView.XAML_Implementation
 
         protected override Size MeasureOverride(Size availableSize)
         {
-            columnCount = (int)Ceiling(availableSize.Width / ChildElementMaxWidth);
-            currentWidth = availableSize.Width / columnCount;
+            columnCount = 
+                (int)Ceiling((availableSize.Width - ChildElementGap) / (ChildElementMaxWidth + ChildElementGap));
+            currentWidth = (availableSize.Width - ChildElementGap) / columnCount;
 
-            var availableSizeForChild = new Size(currentWidth, currentWidth);
+            var availableSizeForChild = 
+                new Size(currentWidth - ChildElementGap, currentWidth - ChildElementGap);
             foreach (var child in Children)
                 child.Measure(availableSizeForChild);
 
             var rowCount = (Children.Count % columnCount == 0 ? 0 : 1) + Children.Count / columnCount;
-            var newSize = new Size(availableSize.Width, rowCount * currentWidth);
+            var newSize = 
+                new Size(availableSize.Width, rowCount * (currentWidth + ChildElementGap) + ChildElementGap);
 
             return newSize;
         }

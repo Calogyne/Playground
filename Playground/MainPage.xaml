@@ -13,7 +13,7 @@
         <PivotItem Header="Canvas">
             <Canvas x:Name="canvas">
                 <Button x:Name="btn" Canvas.Left="73" Canvas.Top="53" Height="49" Width="153" RenderTransformOrigin="0.5,0.5" Content="{x:Bind Path=grid.(Canvas.Left), Mode=OneWay}"/>
-
+                
                 <Grid x:Name="grid" Height="264" Canvas.Left="548" Canvas.Top="227" Width="395"
                       ManipulationMode="All" ManipulationDelta="grid_ManipulationDelta">
                     <Grid.Background>
@@ -35,9 +35,10 @@
                         <local:GaussianBlurBrush/>
                     </Rectangle.Fill>
                 </Rectangle>
+                <Image x:Name="albumImage" Height="158" Canvas.Left="528" Canvas.Top="36" Width="158" />
             </Canvas>
         </PivotItem>
-        
+
         <PivotItem Header="Animated Drawing">
             <win2D:CanvasAnimatedControl x:Name="drawingBoard" 
                 HorizontalAlignment="Stretch" VerticalAlignment="Stretch"

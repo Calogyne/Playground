@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:AdaptiveAlbumView.tests"
-    xmlns:testSubject="using:AdaptiveAlbumView.XAML_Implementation" 
+    xmlns:testSubject="using:AdaptiveAlbumView.XAML" 
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -22,10 +22,8 @@
         <Button x:Name="addButton" Content="Add a picture" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Click="addButton_Click"/>
 
         <ScrollViewer Grid.Row="2">
-            <testSubject:AdaptiveSquareGridView x:Name="myGridView">
-                <Rectangle Fill="Aqua"/>
-                <Rectangle Fill="Orange"/>
-                <Rectangle Fill="Azure"/>
+            <testSubject:AdaptiveSquareGridView x:Name="myGridView" ChildElementGap="6">
+                <Rectangle x:Name="rect1" Fill="DarkViolet"/>
             </testSubject:AdaptiveSquareGridView>
         </ScrollViewer>
 
