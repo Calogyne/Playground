@@ -3,6 +3,7 @@ using System.Numerics;
 using Windows.UI.Xaml.Hosting;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
+using Microsoft.Graphics.Canvas.Effects;
 
 
 namespace AdaptiveAlbumView
@@ -26,6 +27,23 @@ namespace AdaptiveAlbumView
             shadow.Opacity = 0.90f;
             sprite.Shadow = shadow;
             return shadow;
+        }
+
+        public static CompositionBrush Create(this Compositor compositor, float blurAmount)
+        {
+            var blurEffect = new GaussianBlurEffect
+            {
+                Source = new CompositionEffectSourceParameter("backdrop"),
+                BlurAmount = blurAmount,
+                Name = "Blur"
+            };
+
+            var backdropBrush = compositor.CreateHostBackdropBrush();
+            var effectFactory = compositor.CreateEffectFactory(blurEffect, new[] { "Blur.BlurAmount" });
+            var brush = effectFactory.CreateBrush();
+            brush.SetSourceParameter("backdrop", backdropBrush);
+
+            return brush;
         }
 
         public static CubicBezierEasingFunction CreateEaseInOutQuadFunction(this Compositor compositor) =>

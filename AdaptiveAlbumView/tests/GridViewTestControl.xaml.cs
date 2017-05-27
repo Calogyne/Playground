@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
+using AdaptiveAlbumView.XAML;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -27,6 +28,11 @@ namespace AdaptiveAlbumView.tests
             sprite.Brush = compositor.CreateColorBrush(Colors.AliceBlue);
             sprite.Size = new System.Numerics.Vector2(150, 150);
             rect1.SetElementChildVisual(sprite);
+
+            var a = new AlbumItem();
+            addButton.PointerEntered += a.x.Item1;
+            addButton.PointerExited += a.x.Item2;
+            myGridView.Children.Add(a);
         }
 
         private void addButton_Click(object sender, RoutedEventArgs e)

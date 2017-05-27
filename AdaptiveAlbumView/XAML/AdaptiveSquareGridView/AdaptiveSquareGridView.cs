@@ -19,7 +19,9 @@ namespace AdaptiveAlbumView.XAML
         public AdaptiveSquareGridView() : base()
         {
             SetupComposition();
-            this.UseLayoutRounding = false;
+            UseLayoutRounding = false;
+
+            
         }
 
         void SetupComposition()
@@ -50,19 +52,18 @@ namespace AdaptiveAlbumView.XAML
         }
 
         protected override Size ArrangeOverride(Size finalSize)
-        {
+        {   
             if (Children.Count == 0) return base.ArrangeOverride(finalSize);
+            double gap = ChildElementGap;
 
             (int i, int row) current = (0, 0);
             
             foreach (UIElement item in Children)
             {
-                //double additional = 
+                double x = current.i % columnCount * currentWidth + gap,
+                       y = current.row * currentWidth + gap;
 
-                double x = current.i % columnCount * currentWidth + ChildElementGap,
-                       y = current.row * currentWidth + ChildElementGap;
-
-                Rect newRect = new Rect(x, y, currentWidth - ChildElementGap, currentWidth - ChildElementGap);
+                Rect newRect = new Rect(x, y, currentWidth - gap, currentWidth - gap);
 
                 item.Arrange(newRect);
 
@@ -70,7 +71,7 @@ namespace AdaptiveAlbumView.XAML
                     (current.i + 1) >= columnCount && (current.i + 1) % columnCount == 0 ? 1 : 0;
                 current.i += 1;
             }
-            
+
             return finalSize;
         }
 

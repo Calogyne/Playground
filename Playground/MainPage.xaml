@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:win2D="using:Microsoft.Graphics.Canvas.UI.Xaml"
     xmlns:album="using:AdaptiveAlbumView.tests"
+    xmlns:comp="using:AdaptiveAlbumView.Composition"
     mc:Ignorable="d">
 
     <Pivot x:Name="mainPivot" Background="White" Title="Playground">

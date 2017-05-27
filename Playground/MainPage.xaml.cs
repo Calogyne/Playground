@@ -53,7 +53,6 @@ namespace Playground
 
             // commented out for now to prevent it from polluting debug console.
             //canvas.PointerMoved += reportPointerPositionRelativeTo_canvas;
-
             SetupShittyTiltingEffect(grid);
         }
 
